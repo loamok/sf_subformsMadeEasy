@@ -1,0 +1,29 @@
+{
+    "name" : "loamok/subformsmadeeasy",
+    "description" : "Bundle to allow you manipulate subforms in symfony 2 easilly",
+    "type" : "symfony-bundle",
+    "authors" : [{
+        "name" : "Huby Franck",
+        "email" : "franck.huby@loamok.org"
+    }],
+    "keywords" : [
+        "Subforms made easy Bundle", "subforms"
+    ],
+    "license" : [
+        "LGPL V3"
+    ],
+    "require" : {
+    },
+    "autoload" : {
+        "psr-0" : {
+            "Loamok\\SubformsMadeEasyBundle" : ""
+        }
+    },
+    "target-dir" : "Loamok/SubformsMadeEasyBundle",
+    "repositories" : [{}],
+    "extra" : {
+        "branch-alias" : {
+            "dev-master" : "0.1-dev"
+        }
+    }
+}
