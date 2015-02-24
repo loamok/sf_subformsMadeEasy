@@ -128,15 +128,17 @@ function SubForm(subFormCfg) {
         // Création du lien
         var deleteLink = $('<a href="#" class="btn btn-danger">'+this.deleteBtnLabel+'</a>');
 
-        // Ajout du lien
-        this.prototypes[iProtos].append(deleteLink);
-        var obj = this;
-        // Ajout du listener sur le clic du lien
-        deleteLink.click(function(e) {
-            e.preventDefault(); // évite qu'un # apparaisse dans l'URL
-            obj.prototypes[iProtos].remove();
-            return false;
-        });
+        if(typeof this.prototypes[iProtos] != 'undefined') {
+            // Ajout du lien
+            this.prototypes[iProtos].append(deleteLink);
+            var obj = this;
+            // Ajout du listener sur le clic du lien
+            deleteLink.click(function(e) {
+                e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+                obj.prototypes[iProtos].remove();
+                return false;
+            });
+        }
     };
     
     this.init(
