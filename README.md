@@ -132,6 +132,14 @@ Add the row in your form.html.twig :
 In the same twig template but at the end of the file add the js configuration :
 ```html
 <script type="text/javascript">
+
+    function plop(e, i) {
+        console.debug(e);
+        console.debug(i);
+        return true
+    }
+
+
     $(document).ready(function () {
         new SubForm(
             new SubFormCfg(
@@ -149,8 +157,15 @@ In the same twig template but at the end of the file add the js configuration :
                         'File'
                     )
                 ],
-                false
-        ));
+                false,
+            [
+                new Closure(
+                   'your_wonderfullbundle_article_medias',
+                   'title',
+                   'change',
+                   'plop'
+                )
+            ]));
     });
 </script>
 ```
@@ -167,15 +182,28 @@ Samples:
 Minimalistic config :
 ```html
 <script type="text/javascript">
+    
+    function plop(e, i) {
+        console.debug(e);
+        console.debug(i);
+        return true
+    }
+
     $(document).ready(function () {
         new SubForm(
             {
-                divName: 'my_wwonderfullbundle_post_tag',
+                divName: 'my_wonderfullbundle_post_tag',
                 elementLabel: "Tag",
                 deleteBtnLabel: "Delete Tag",
                 addBtnLabel: "New Tag",
                 fields: [{fieldName: 'Name :', baseFieldName: 'Name'}],
-                firstRequired: true
+                firstRequired: true,
+                closures: [{
+                   triggerName: 'my_wonderfullbundle_post_tag',
+                   attachTo: 'title',
+                   attachOn: 'change',
+                   callableFn: 'plop'
+                }]
             }
         );
     });
@@ -184,33 +212,56 @@ Minimalistic config :
 Short config :
 ```html
 <script type="text/javascript">
+    
+    function plop(e, i) {
+        console.debug(e);
+        console.debug(i);
+        return true
+    }
+
     $(document).ready(function () {
         new SubForm(
             new SubFormCfg(
-                'my_wwonderfullbundle_post_tag',
+                'my_wonderfullbundle_post_tag',
                 "Tag",
                 "Delete Tag",
                 "New Tag",
                 [new FieldDesc('Name :', 'Name')],
-                true
-            )
-        );
+                true,
+                [ new Closure(
+                   'my_wonderfullbundle_post_tag',
+                   'title',
+                   'change',
+                   'plop'
+                )]));
     });
 </script>
 ```
 Long config :
 ```html
 <script type="text/javascript">
+
+    function plop(e, i) {
+        console.debug(e);
+        console.debug(i);
+        return true
+    }
+
     $(document).ready(function () {
         var myfielddesc = new FieldDesc('Name :', 'Name');
         var mysubformcfg = new SubFormCfg(
-                'my_wwonderfullbundle_post_tag',
+                'my_wonderfullbundle_post_tag',
                 "Tag",
                 "Delete Tag",
                 "New Tag",
                 [myfielddesc],
-                true
-            );
+                true,
+                [ new Closure(
+                   'my_wonderfullbundle_post_tag',
+                   'title',
+                   'change',
+                   'plop'
+                )]));
         var mysubform = new SubForm(mysubformcfg);
     });
 </script>
@@ -218,21 +269,39 @@ Long config :
 Adding two subforms to a form :
 ```html
 <script type="text/javascript">
+
+    function plop(e, i) {
+        console.debug(e);
+        console.debug(i);
+        return true
+    }
+
+    function noteValue(e, i) {
+        console.debug(e);
+        console.debug(i);
+        return true
+    }
+
     $(document).ready(function () {
         var myfielddesc = new FieldDesc('Name :', 'Name');
         var mysubformcfg = new SubFormCfg(
-                'my_wwonderfullbundle_post_tag',
+                'my_wonderfullbundle_post_tag',
                 "Tag",
                 "Delete Tag",
                 "New Tag",
                 [myfielddesc],
-                true
-            );
+                true,
+                [ new Closure(
+                   'my_wonderfullbundle_post_tag',
+                   'title',
+                   'change',
+                   'plop'
+                )]));
         var mysubform = new SubForm(mysubformcfg);
     });
     new SubForm(
             {
-                divName: 'my_wwonderfullbundle_post_note',
+                divName: 'my_wonderfullbundle_post_note',
                 elementLabel: "Note",
                 deleteBtnLabel: "Delete Note",
                 addBtnLabel: "New Note",
@@ -240,7 +309,13 @@ Adding two subforms to a form :
                     {fieldName: 'Value :', baseFieldName: 'Value'},
                     {fieldName: 'User :', baseFieldName: 'User'}
                 ],
-                firstRequired: true
+                firstRequired: true,
+                [ new Closure(
+                   'my_wonderfullbundle_post_note',
+                   'value',
+                   'change',
+                   'noteValue'
+                )]));
             }
         );
 </script>
