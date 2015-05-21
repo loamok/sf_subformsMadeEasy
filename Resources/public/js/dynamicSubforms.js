@@ -10,7 +10,7 @@ $(document).ready(function () {
             "{{ 'some.trans.key.deleteTagBtn.label' | trans }}", 
             "{{ 'some.trans.key.addTagBtn.label' | trans }}", 
             [mySubFormFieldDesc], 
-            false);
+            false, ['voir closures']);
     var mySubForm = new SubForm(mySubFormCfg);
 });
 </script>
@@ -36,24 +36,61 @@ new SubForm(
             )
         ],
         false|true (depends de vos besoins)
+        , ['voir closures']
     ));
 });
 </script>
 
+Nouveautée : Ajouter des closures
+Ceci vous permet de lier des fonctions propres à des évènements liès au champs du sous-formulaire
+
+Vos fonctions doivent récupérer 2 paramètres : 
+ l'objet auquel est attaché le déclencheur
+ l'index utilisé par le sous-formulaire
+
+Créez une fonction avant l'appel à subform :
+
+function plop(e, i) {
+    console.debug(e);
+    console.debug(i);
+    return true
+}
+
+Dans votre appel à subFormCfg ajoutez votre closure :
+
+....
+            [mySubFormFieldDesc], 
+            false,
+            [
+                new Closure(
+                   'my_bestbundle_entity_subForm',
+                   'myElementName (eg type)',
+                   'change' ou 'click' le déclencheur à utiliser,
+                   'plop' le nom de votre fonction à appeler
+                )
+            ]);
+
 */
 
+function Closure(triggerName, attachTo, attachOn, callableFn) {
+    this.triggerName = triggerName;
+    this.attachTo = attachTo;
+    this.attachOn = attachOn;
+    this.callableFn = callableFn;
+}
 function FieldDesc(fieldName, baseFieldName) {
     this.fieldName = fieldName;
     this.baseFieldName = baseFieldName;
 }
 
-function SubFormCfg(divName, elementLabel, deleteBtnLabel, addBtnLabel, fields, firstRequired) {
+function SubFormCfg(divName, elementLabel, deleteBtnLabel, addBtnLabel, fields, firstRequired, closures) {
     this.divName = divName;
     this.elementLabel = elementLabel;
     this.deleteBtnLabel = deleteBtnLabel;
     this.addBtnLabel = addBtnLabel;
     this.fields = fields;
     this.firstRequired = firstRequired;
+    this.closures = closures;
 }
 
 function SubForm(subFormCfg) {
@@ -63,6 +100,7 @@ function SubForm(subFormCfg) {
     this.addBtnLabel = null;
     this.fields = null;
     this.firstRequired = null;
+    this.closures = [];
     
     // self usage
     this.container = null;
@@ -70,14 +108,14 @@ function SubForm(subFormCfg) {
     this.addLink = null;
     this.index = null;
     
-    
-    this.init = function (containerId, elementLabel, deleteBtnLabel, addBtnLabel, fields, firstRequired) {
+    this.init = function (containerId, elementLabel, deleteBtnLabel, addBtnLabel, fields, firstRequired, closures) {
         this.container = $('div#'+containerId);
         this.elementLabel = elementLabel;
         this.deleteBtnLabel = deleteBtnLabel;
         this.addBtnLabel = addBtnLabel;
         this.fields = fields;
         this.firstRequired = firstRequired;
+        this.closures = closures;
         
         this.addLink = $('<a href="#" id="add_btn-'+containerId+'" class="btn btn-default">'+this.addBtnLabel+'</a>');
         this.container.append(this.addLink);
@@ -90,9 +128,20 @@ function SubForm(subFormCfg) {
         
         this.index = this.container.find(':input').length;
         
+        var oldIndex = this.index;
+        for (var ii=0; ii < this.closures.length; ii++) {
+            $("[id^='"+this.closures[ii].triggerName+"_'][name*='"+this.closures[ii].attachTo+"']").each(function (i, e) {
+                obj.index = i;
+                obj.attachClosures();
+            });
+        }
+        
+        this.index = oldIndex;
+        
         if(this.firstRequired) {
             this.addSubform();
         } 
+        
         if (this.index !=0) {
             this.container.children('div').each(function(){
                 obj.addDeleteLink(this.index);
@@ -120,6 +169,7 @@ function SubForm(subFormCfg) {
         // On ajoute le prototype modifié à la fin de la balise <div>
         this.container.append(this.prototypes[iProtos]);
 
+        this.attachClosures();
         // Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numéro
         this.index++;
     };
@@ -129,6 +179,9 @@ function SubForm(subFormCfg) {
         var deleteLink = $('<a href="#" class="btn btn-danger">'+this.deleteBtnLabel+'</a>');
 
         // Ajout du lien
+        if(this.prototypes[iProtos] === undefined) {
+            return false;
+        }
         this.prototypes[iProtos].append(deleteLink);
         var obj = this;
         // Ajout du listener sur le clic du lien
@@ -139,14 +192,36 @@ function SubForm(subFormCfg) {
         });
     };
     
+    this.attachClosure = function(closure) {
+        var elem = $("#"+closure.triggerName+"_"+this.index+'_'+closure.attachTo);
+        var index = this.index;
+        switch (closure.attachOn) {
+            case "click":
+                $(elem).click(function(){
+                    return window[closure.callableFn]($(this), index);
+                });
+                break;
+            case "change":
+                $(elem).change(function(){
+                    return window[closure.callableFn]($(this), index);
+                });
+                break;
+        }
+    };
+    
+    this.attachClosures = function() {
+        for (var i=0; i < this.closures.length; i++) {
+            this.attachClosure(this.closures[i]);
+        }
+    };
+    
     this.init(
         subFormCfg.divName, 
         subFormCfg.elementLabel, 
         subFormCfg.deleteBtnLabel, 
         subFormCfg.addBtnLabel, 
         subFormCfg.fields, 
-        subFormCfg.firstRequired
+        subFormCfg.firstRequired,
+        subFormCfg.closures
     );
 }
-
-
