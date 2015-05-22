@@ -73,19 +73,20 @@ Dans votre appel à subFormCfg ajoutez votre closure :
 
 */
 
-function Closure(triggerName, attachTo, attachOn, callableFn, runOnInit) {
+var CLosure = function Closure(triggerName, attachTo, attachOn, callableFn, runOnInit) {
     this.triggerName = triggerName;
     this.attachTo = attachTo;
     this.attachOn = attachOn;
     this.callableFn = callableFn;
     this.runOnInit = runOnInit;
-}
-function FieldDesc(fieldName, baseFieldName) {
+};
+
+var FieldDesc = function FieldDesc(fieldName, baseFieldName) {
     this.fieldName = fieldName;
     this.baseFieldName = baseFieldName;
-}
+};
 
-function SubFormCfg(divName, elementLabel, deleteBtnLabel, addBtnLabel, fields, firstRequired, closures) {
+var SubFormCfg = function SubFormCfg(divName, elementLabel, deleteBtnLabel, addBtnLabel, fields, firstRequired, closures) {
     this.divName = divName;
     this.elementLabel = elementLabel;
     this.deleteBtnLabel = deleteBtnLabel;
@@ -93,9 +94,9 @@ function SubFormCfg(divName, elementLabel, deleteBtnLabel, addBtnLabel, fields, 
     this.fields = fields;
     this.firstRequired = firstRequired;
     this.closures = closures;
-}
+};
 
-function SubForm(subFormCfg) {
+var SubForm = function SubForm(subFormCfg) {
     // object properties
     this.elementLabel = null;
     this.deleteBtnLabel = null;
@@ -231,4 +232,4 @@ function SubForm(subFormCfg) {
         subFormCfg.firstRequired,
         subFormCfg.closures
     );
-}
+};
