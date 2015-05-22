@@ -73,7 +73,7 @@ Dans votre appel à subFormCfg ajoutez votre closure :
 
 */
 
-var CLosure = function Closure(triggerName, attachTo, attachOn, callableFn, runOnInit) {
+var Closure = function Closure(triggerName, attachTo, attachOn, callableFn, runOnInit) {
     this.triggerName = triggerName;
     this.attachTo = attachTo;
     this.attachOn = attachOn;
