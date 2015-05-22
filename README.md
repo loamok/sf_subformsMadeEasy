@@ -110,7 +110,8 @@ class ArticleType extends AbstractType {
                 ->add('medias', 'collection', array(
                     'type' => new MediaType(),
                     'allow_add' => true,
-                    'allow_delete' => true
+                    'allow_delete' => true,
+                    'by_reference' => false
                 ))
 ```
 Add the row in your form.html.twig :
@@ -163,7 +164,8 @@ In the same twig template but at the end of the file add the js configuration :
                    'your_wonderfullbundle_article_medias',
                    'title',
                    'change',
-                   'plop'
+                   'plop',
+                    true
                 )
             ]));
     });
@@ -202,7 +204,8 @@ Minimalistic config :
                    triggerName: 'my_wonderfullbundle_post_tag',
                    attachTo: 'title',
                    attachOn: 'change',
-                   callableFn: 'plop'
+                   callableFn: 'plop',
+                   runOnInit: true
                 }]
             }
         );
@@ -232,7 +235,8 @@ Short config :
                    'my_wonderfullbundle_post_tag',
                    'title',
                    'change',
-                   'plop'
+                   'plop',
+                    true
                 )]));
     });
 </script>
@@ -260,7 +264,8 @@ Long config :
                    'my_wonderfullbundle_post_tag',
                    'title',
                    'change',
-                   'plop'
+                   'plop',
+                    true
                 )]));
         var mysubform = new SubForm(mysubformcfg);
     });
@@ -295,7 +300,8 @@ Adding two subforms to a form :
                    'my_wonderfullbundle_post_tag',
                    'title',
                    'change',
-                   'plop'
+                   'plop',
+                    true
                 )]));
         var mysubform = new SubForm(mysubformcfg);
     });
@@ -314,7 +320,8 @@ Adding two subforms to a form :
                    'my_wonderfullbundle_post_note',
                    'value',
                    'change',
-                   'noteValue'
+                   'noteValue',
+                    true
                 )]));
             }
         );
