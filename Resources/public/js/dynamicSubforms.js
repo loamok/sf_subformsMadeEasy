@@ -66,17 +66,19 @@ Dans votre appel à subFormCfg ajoutez votre closure :
                    'my_bestbundle_entity_subForm',
                    'myElementName (eg type)',
                    'change' ou 'click' le déclencheur à utiliser,
-                   'plop' le nom de votre fonction à appeler
+                   'plop' le nom de votre fonction à appeler,
+                   true || false : lancer le déclencheur au chargement de la page
                 )
             ]);
 
 */
 
-function Closure(triggerName, attachTo, attachOn, callableFn) {
+function Closure(triggerName, attachTo, attachOn, callableFn, runOnInit) {
     this.triggerName = triggerName;
     this.attachTo = attachTo;
     this.attachOn = attachOn;
     this.callableFn = callableFn;
+    this.runOnInit = runOnInit;
 }
 function FieldDesc(fieldName, baseFieldName) {
     this.fieldName = fieldName;
@@ -199,11 +201,17 @@ function SubForm(subFormCfg) {
                 $(elem).click(function(){
                     return window[closure.callableFn]($(this), index);
                 });
+                if(closure.runOnInit) {
+                    $(elem).click();
+                }
                 break;
             case "change":
                 $(elem).change(function(){
                     return window[closure.callableFn]($(this), index);
                 });
+                if(closure.runOnInit) {
+                    $(elem).change();
+                }
                 break;
         }
     };
