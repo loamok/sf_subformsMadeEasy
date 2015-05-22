@@ -1,15 +1,15 @@
 /*
-Utilisation (dans le template twig d'un formulaire): 
+Utilisation (dans le template twig d'un formulaire):
 
 <script type="text/javascript">
 $(document).ready(function () {
     var mySubFormFieldDesc = new FieldDesc("{{ 'some.trans.key.fieldname'|trans }}", 'Fieldname');
     var mySubFormCfg = new SubFormCfg(
-            'my_bestbundle_entity_subForm', 
-            "{{ 'some.trans.key.element.label'|trans }}", 
-            "{{ 'some.trans.key.deleteTagBtn.label' | trans }}", 
-            "{{ 'some.trans.key.addTagBtn.label' | trans }}", 
-            [mySubFormFieldDesc], 
+            'my_bestbundle_entity_subForm',
+            "{{ 'some.trans.key.element.label'|trans }}",
+            "{{ 'some.trans.key.deleteTagBtn.label' | trans }}",
+            "{{ 'some.trans.key.addTagBtn.label' | trans }}",
+            [mySubFormFieldDesc],
             false, ['voir closures']);
     var mySubForm = new SubForm(mySubFormCfg);
 });
@@ -44,7 +44,7 @@ new SubForm(
 Nouveautée : Ajouter des closures
 Ceci vous permet de lier des fonctions propres à des évènements liès au champs du sous-formulaire
 
-Vos fonctions doivent récupérer 2 paramètres : 
+Vos fonctions doivent récupérer 2 paramètres :
  l'objet auquel est attaché le déclencheur
  l'index utilisé par le sous-formulaire
 
@@ -59,7 +59,7 @@ function plop(e, i) {
 Dans votre appel à subFormCfg ajoutez votre closure :
 
 ....
-            [mySubFormFieldDesc], 
+            [mySubFormFieldDesc],
             false,
             [
                 new Closure(
@@ -73,19 +73,19 @@ Dans votre appel à subFormCfg ajoutez votre closure :
 
 */
 
-function Closure(triggerName, attachTo, attachOn, callableFn, runOnInit) {
+var Closure = function Closure(triggerName, attachTo, attachOn, callableFn, runOnInit) {
     this.triggerName = triggerName;
     this.attachTo = attachTo;
     this.attachOn = attachOn;
     this.callableFn = callableFn;
     this.runOnInit = runOnInit;
 }
-function FieldDesc(fieldName, baseFieldName) {
+var FieldDesc = function FieldDesc(fieldName, baseFieldName) {
     this.fieldName = fieldName;
     this.baseFieldName = baseFieldName;
 }
 
-function SubFormCfg(divName, elementLabel, deleteBtnLabel, addBtnLabel, fields, firstRequired, closures) {
+var SubFormCfg = function SubFormCfg(divName, elementLabel, deleteBtnLabel, addBtnLabel, fields, firstRequired, closures) {
     this.divName = divName;
     this.elementLabel = elementLabel;
     this.deleteBtnLabel = deleteBtnLabel;
@@ -95,7 +95,7 @@ function SubFormCfg(divName, elementLabel, deleteBtnLabel, addBtnLabel, fields, 
     this.closures = closures;
 }
 
-function SubForm(subFormCfg) {
+var SubForm = function SubForm(subFormCfg) {
     // object properties
     this.elementLabel = null;
     this.deleteBtnLabel = null;
@@ -103,13 +103,13 @@ function SubForm(subFormCfg) {
     this.fields = null;
     this.firstRequired = null;
     this.closures = [];
-    
+
     // self usage
     this.container = null;
     this.prototypes = [];
     this.addLink = null;
     this.index = null;
-    
+
     this.init = function (containerId, elementLabel, deleteBtnLabel, addBtnLabel, fields, firstRequired, closures) {
         this.container = $('div#'+containerId);
         this.elementLabel = elementLabel;
@@ -118,7 +118,7 @@ function SubForm(subFormCfg) {
         this.fields = fields;
         this.firstRequired = firstRequired;
         this.closures = closures;
-        
+
         this.addLink = $('<a href="#" id="add_btn-'+containerId+'" class="btn btn-default">'+this.addBtnLabel+'</a>');
         this.container.append(this.addLink);
         var obj = this;
@@ -127,9 +127,9 @@ function SubForm(subFormCfg) {
             obj.addSubform();
             return false;
         });
-        
+
         this.index = this.container.find(':input').length;
-        
+
         var oldIndex = this.index;
         for (var ii=0; ii < this.closures.length; ii++) {
             $("[id^='"+this.closures[ii].triggerName+"_'][name*='"+this.closures[ii].attachTo+"']").each(function (i, e) {
@@ -137,20 +137,20 @@ function SubForm(subFormCfg) {
                 obj.attachClosures();
             });
         }
-        
+
         this.index = oldIndex;
-        
+
         if(this.firstRequired) {
             this.addSubform();
-        } 
-        
+        }
+
         if (this.index !=0) {
             this.container.children('div').each(function(){
                 obj.addDeleteLink(this.index);
             });
         }
     };
-    
+
     // La fonction qui ajoute un formulaire
     this.addSubform = function () {
 //        var iProtos = this.prototypes.length;
@@ -175,7 +175,7 @@ function SubForm(subFormCfg) {
         // Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numéro
         this.index++;
     };
-    
+
     this.addDeleteLink = function (iProtos) {
         // Création du lien
         var deleteLink = $('<a href="#" class="btn btn-danger">'+this.deleteBtnLabel+'</a>');
@@ -192,7 +192,7 @@ function SubForm(subFormCfg) {
             });
         }
     };
-    
+
     this.attachClosure = function(closure) {
         var elem = $("#"+closure.triggerName+"_"+this.index+'_'+closure.attachTo);
         var index = this.index;
@@ -215,19 +215,19 @@ function SubForm(subFormCfg) {
                 break;
         }
     };
-    
+
     this.attachClosures = function() {
         for (var i=0; i < this.closures.length; i++) {
             this.attachClosure(this.closures[i]);
         }
     };
-    
+
     this.init(
-        subFormCfg.divName, 
-        subFormCfg.elementLabel, 
-        subFormCfg.deleteBtnLabel, 
-        subFormCfg.addBtnLabel, 
-        subFormCfg.fields, 
+        subFormCfg.divName,
+        subFormCfg.elementLabel,
+        subFormCfg.deleteBtnLabel,
+        subFormCfg.addBtnLabel,
+        subFormCfg.fields,
         subFormCfg.firstRequired,
         subFormCfg.closures
     );
