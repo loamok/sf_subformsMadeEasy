@@ -126,6 +126,7 @@ var SubForm = function SubForm(subFormCfg) {
         this.addLink.click(function(e){
             e.preventDefault();
             obj.addSubform();
+            if (typeof addCallBack  == 'function') { window['addCallBack'](); }
             return false;
         });
         
